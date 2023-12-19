@@ -1,45 +1,20 @@
-import "setimmediate"
-
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import ChildRegistrationForm from './screens/childRegistrationForm';
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ChildrenListView from "./screens/ChildrenListView";
-import ChildDetails from "./screens/childDetails";
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import ChildRegistrationForm from './screens/childRegistrationForm';
+import ChildrenListView from './screens/ChildrenListView';
+// import ChildDetails from './screens/childDetails';
 
-const Stack = createNativeStackNavigator()
+const Drawer = createDrawerNavigator();
 
-// export default function App() {
-//   return (
-    
-    
-//       <ChildRegistrationForm />
-    
-    
-
-//   );
-// }
-
-
-
-export default function App() {
-  return (
-    <NavigationContainer>{/* Rest of your app code */}
-      <Stack.Navigator initialRouteName="ChildrenListView">
-        <Stack.Screen name="ChildRegistrationForm" component={ChildRegistrationForm}/>
-        <Stack.Screen name="ChildrenListView" component={ChildrenListView}/>
-        <Stack.Screen name="ChildDetails" component={ChildDetails} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+export default function App(){
+    return(
+        <NavigationContainer>
+            <Drawer.Navigator>
+                <Drawer.Screen name="Children List" component = {ChildrenListView} />
+                {/* <Drawer.Screen name="Child Details" component = {ChildDetails} /> */}
+                <Drawer.Screen name="Add Child" component={ChildRegistrationForm} />
+            </Drawer.Navigator>
+        </NavigationContainer>
+    );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
