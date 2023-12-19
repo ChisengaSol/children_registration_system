@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, SafeAreaView, StyleSheet } from 'react-native';
 import { openDatabase } from 'expo-sqlite';
 
 const db = openDatabase('ChildDB.db');
@@ -59,7 +59,7 @@ const ChildrenListView = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.searchInput}
         value={searchQuery}
@@ -75,7 +75,7 @@ const ChildrenListView = ({ navigation }) => {
         renderItem={renderChild}
         keyExtractor={(item) => `${item.id}`}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

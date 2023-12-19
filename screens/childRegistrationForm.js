@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { openDatabase } from 'expo-sqlite';
 
 const db = openDatabase('ChildDB.db');
@@ -95,7 +95,8 @@ const ChildRegistrationForm = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
       <Text>First Name</Text>
       <TextInput
         style={styles.input}
@@ -148,12 +149,14 @@ const ChildRegistrationForm = () => {
         <Text style={styles.buttonText}>Add</Text>
     </TouchableOpacity>
     </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    flexGrow: 1,
   },
   input: {
     height: 40,
