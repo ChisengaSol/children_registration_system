@@ -6,6 +6,7 @@ import ChildRegistrationForm from './screens/childRegistrationForm';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ChildrenListView from "./screens/ChildrenListView";
+import ChildDetails from "./screens/childDetails";
 
 const Stack = createNativeStackNavigator()
 
@@ -28,6 +29,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="ChildrenListView">
         <Stack.Screen name="ChildRegistrationForm" component={ChildRegistrationForm}/>
         <Stack.Screen name="ChildrenListView" component={ChildrenListView}/>
+        <Stack.Screen name="ChildDetails" component={ChildDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );

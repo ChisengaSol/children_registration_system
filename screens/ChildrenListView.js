@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet,TextInput } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { openDatabase } from 'expo-sqlite';
 
 const db = openDatabase('ChildDB.db');
 
-const ChildrenListView = () => {
+const ChildrenListView = ({ navigation }) => {
   const [children, setChildren] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -26,7 +26,10 @@ const ChildrenListView = () => {
   const renderChild = ({ item }) => {
     const fullName = `${item.first_name} ${item.last_name}`;
     return (
-      <TouchableOpacity style={styles.childItem}>
+      <TouchableOpacity
+        style={styles.childItem}
+        onPress={() => navigation.navigate('ChildDetails', { child: item })}
+      >
         <Text>{fullName}</Text>
       </TouchableOpacity>
     );
@@ -55,7 +58,6 @@ const ChildrenListView = () => {
     });
   };
 
-
   return (
     <View style={styles.container}>
       <TextInput
@@ -81,6 +83,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  searchInput: {
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
   childItem: {
     padding: 10,
     borderBottomWidth: 1,
@@ -92,12 +100,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  searchInput: {
-    padding: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
   },
 });
 
