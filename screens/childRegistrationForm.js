@@ -16,6 +16,12 @@ const ChildRegistrationForm = () => {
     DTaP: false,
   });
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheck = () => {
+    setIsChecked(!isChecked);
+  };
+
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -73,48 +79,50 @@ const ChildRegistrationForm = () => {
   const renderCheckbox = (label, type) => {
     return (
       <TouchableOpacity
-        style={styles.checkbox}
+        style={[styles.checkbox, immunizations[type] && styles.checkedBox]}
         onPress={() => toggleImmunization(type)}
       >
-        <Text>{label}</Text>
-        {immunizations[type] && <Text>✔</Text>}
+        <Text style={styles.checkboxLabel}>{label}</Text>
+        {immunizations[type] && <Text style={styles.checkmark}>✔</Text>}
       </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
-      <Text>First Name:</Text>
+      <Text>First Name</Text>
       <TextInput
         style={styles.input}
         value={firstName}
         onChangeText={(text) => setFirstName(text)}
       />
-      <Text>Last Name:</Text>
+      <Text>Last Name</Text>
       <TextInput
         style={styles.input}
         value={lastName}
         onChangeText={(text) => setLastName(text)}
       />
-      <Text>Age:</Text>
+      <Text>Age</Text>
       <TextInput
         style={styles.input}
         value={age}
         keyboardType="numeric"
         onChangeText={(text) => setAge(text)}
       />
-      <Text>Gender:</Text>
+      <Text>Gender</Text>
       <TextInput
         style={styles.input}
         value={gender}
         onChangeText={(text) => setGender(text)}
       />
-      <Text>Immunizations:</Text>
+      <Text>Immunizations(click to select)</Text>
       {renderCheckbox('BCG', 'BCG')}
       {renderCheckbox('MMR', 'MMR')}
       {renderCheckbox('RV', 'RV')}
       {renderCheckbox('DTaP', 'DTaP')}
-      <Button title="Save" onPress={handleSave} />
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
+        <Text style={styles.buttonText}>Add</Text>
+    </TouchableOpacity>
     </View>
   );
 };
@@ -127,12 +135,34 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 15,
+    marginTop: 5,
+    borderColor: '#ccc',
   },
   checkbox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 10,
+  },
+  checkboxLabel: {
+    marginLeft: 8,
+  },
+  checkedBox: {
+    backgroundColor: '#b2cbde',
+    borderRadius: 3,
+    padding: 8,
+  },
+  button: {
+    backgroundColor: '#3498db',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
