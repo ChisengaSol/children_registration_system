@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet,TextInput } from 'react-native';
 import { openDatabase } from 'expo-sqlite';
 
 const db = openDatabase('ChildDB.db');
 
 const ChildrenListView = () => {
   const [children, setChildren] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -38,8 +39,31 @@ const ChildrenListView = () => {
     setChildren(sortedChildren);
   };
 
+  const searchChildren = (text) => {
+    setSearchQuery(text);
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM Child WHERE first_name LIKE ?',
+        [`%${text}%`],
+        (_, { rows }) => {
+          setChildren(rows._array);
+        },
+        (tx, error) => {
+          console.log('Error:', error);
+        }
+      );
+    });
+  };
+
+
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        value={searchQuery}
+        placeholder="Search by Name"
+        onChangeText={searchChildren}
+      />
       <TouchableOpacity style={styles.sortButton} onPress={sortChildrenByName}>
         <Text>Sort by Name</Text>
       </TouchableOpacity>
@@ -68,6 +92,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchInput: {
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
 });
 
