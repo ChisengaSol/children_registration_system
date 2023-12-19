@@ -3,7 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ChildRegistrationForm from './screens/childRegistrationForm';
 import ChildrenListView from './screens/ChildrenListView';
-// import ChildDetails from './screens/childDetails';
+import ChildDetails from './screens/childDetails';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -11,9 +12,11 @@ export default function App(){
     return(
         <NavigationContainer>
             <Drawer.Navigator>
-                <Drawer.Screen name="Children List" component = {ChildrenListView} />
-                {/* <Drawer.Screen name="Child Details" component = {ChildDetails} /> */}
-                <Drawer.Screen name="Add Child" component={ChildRegistrationForm} />
+                <Drawer.Screen name="ChildrenList" component = {ChildrenListView} />
+                <Drawer.Screen name="AddChild" component={ChildRegistrationForm} />
+                <Drawer.Screen name="ChildDetails" component={ChildDetails}
+                options={{ drawerLabel: () => null }} // Set drawerLabel to null to hide from the drawer
+                 />
             </Drawer.Navigator>
         </NavigationContainer>
     );
