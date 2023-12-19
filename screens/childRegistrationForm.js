@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, CheckBox } from 'react-native';
-import { openDatabase } from 'react-native-sqlite-storage';
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
 
 const ChildRegistrationForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -15,12 +14,52 @@ const ChildRegistrationForm = () => {
   });
 
   const handleSave = () => {
-    // Handle saving form data here
-    console.log('Saved data:', { firstName, lastName, age, gender, immunizations });
+    // Validate form fields before saving (add your validation logic here)
+
+    // Convert immunizations object to an array of selected immunizations
+    const selectedImmunizations = Object.keys(immunizations).filter(
+      (key) => immunizations[key]
+    );
+
+    // Save the data or perform any other action
+    console.log('Saving Data:', {
+      firstName,
+      lastName,
+      age,
+      gender,
+      immunizations: selectedImmunizations,
+    });
+
+    // Reset form fields after saving
+    setFirstName('');
+    setLastName('');
+    setAge('');
+    setGender('Male');
+    setImmunizations({
+      BCG: false,
+      MMR: false,
+      RV: false,
+      DTaP: false,
+    });
   };
 
-  const handleCheckboxChange = (immunization) => {
-    setImmunizations({ ...immunizations, [immunization]: !immunizations[immunization] });
+  const toggleImmunization = (type) => {
+    setImmunizations((prev) => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+  };
+
+  const renderCheckbox = (label, type) => {
+    return (
+      <TouchableOpacity
+        style={styles.checkbox}
+        onPress={() => toggleImmunization(type)}
+      >
+        <Text>{label}</Text>
+        {immunizations[type] && <Text>✔</Text>}
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -51,28 +90,10 @@ const ChildRegistrationForm = () => {
         onChangeText={(text) => setGender(text)}
       />
       <Text>Immunizations:</Text>
-      <View style={styles.checkboxContainer}>
-        <CheckBox
-          value={immunizations.BCG}
-          onValueChange={() => handleCheckboxChange('BCG')}
-        />
-        <Text style={styles.checkboxLabel}>BCG</Text>
-        <CheckBox
-          value={immunizations.MMR}
-          onValueChange={() => handleCheckboxChange('MMR')}
-        />
-        <Text style={styles.checkboxLabel}>MMR</Text>
-        <CheckBox
-          value={immunizations.RV}
-          onValueChange={() => handleCheckboxChange('RV')}
-        />
-        <Text style={styles.checkboxLabel}>RV</Text>
-        <CheckBox
-          value={immunizations.DTaP}
-          onValueChange={() => handleCheckboxChange('DTaP')}
-        />
-        <Text style={styles.checkboxLabel}>DTaP</Text>
-      </View>
+      {renderCheckbox('BCG', 'BCG')}
+      {renderCheckbox('MMR', 'MMR')}
+      {renderCheckbox('RV', 'RV')}
+      {renderCheckbox('DTaP', 'DTaP')}
       <Button title="Save" onPress={handleSave} />
     </View>
   );
@@ -88,12 +109,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
   },
-  checkboxContainer: {
+  checkbox: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  checkboxLabel: {
-    margin: 8,
+    marginBottom: 5,
   },
 });
 
