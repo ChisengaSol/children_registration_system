@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import { openDatabase } from 'expo-sqlite';
+
+const db = openDatabase('ChildDB.db');
 
 const ChildRegistrationForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -13,33 +16,50 @@ const ChildRegistrationForm = () => {
     DTaP: false,
   });
 
-  const handleSave = () => {
-    // Validate form fields before saving (add your validation logic here)
-
-    // Convert immunizations object to an array of selected immunizations
-    const selectedImmunizations = Object.keys(immunizations).filter(
-      (key) => immunizations[key]
-    );
-
-    // Save the data or perform any other action
-    console.log('Saving Data:', {
-      firstName,
-      lastName,
-      age,
-      gender,
-      immunizations: selectedImmunizations,
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS Child (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name VARCHAR(30), last_name VARCHAR(30), age INTEGER, gender VARCHAR(10), bcg INTEGER DEFAULT 0, mmr INTEGER DEFAULT 0, rv INTEGER, dtap INTEGER DEFAULT 0);'
+      );
     });
+  }, []);
 
-    // Reset form fields after saving
-    setFirstName('');
-    setLastName('');
-    setAge('');
-    setGender('Male');
-    setImmunizations({
-      BCG: false,
-      MMR: false,
-      RV: false,
-      DTaP: false,
+  const handleSave = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'INSERT INTO Child (first_name, last_name, age, gender, bcg, mmr, rv, dtap) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          firstName,
+          lastName,
+          age,
+          gender,
+          immunizations.BCG ? 1 : 0,
+          immunizations.MMR ? 1 : 0,
+          immunizations.RV ? 1 : 0,
+          immunizations.DTaP ? 1 : 0,
+        ],
+        (tx, results) => {
+          if (results.rowsAffected > 0) {
+            console.log('Data saved successfully');
+            // Reset form fields after saving
+            setFirstName('');
+            setLastName('');
+            setAge('');
+            setGender('Male');
+            setImmunizations({
+              BCG: false,
+              MMR: false,
+              RV: false,
+              DTaP: false,
+            });
+          } else {
+            console.log('Failed to save data');
+          }
+        },
+        (tx, error) => {
+          console.log('Error:', error);
+        }
+      );
     });
   };
 
