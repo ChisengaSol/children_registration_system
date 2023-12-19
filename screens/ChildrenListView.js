@@ -67,8 +67,9 @@ const ChildrenListView = ({ navigation }) => {
         onChangeText={searchChildren}
       />
       <TouchableOpacity style={styles.sortButton} onPress={sortChildrenByName}>
-        <Text>Sort by Name</Text>
+        <Text style={{ color: '#fff' }}>Sort</Text>
       </TouchableOpacity>
+      <Text style={styles.header}>Names</Text>
       <FlatList
         data={children}
         renderItem={renderChild}
@@ -97,9 +98,15 @@ const styles = StyleSheet.create({
   sortButton: {
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#3498db',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 5,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
 

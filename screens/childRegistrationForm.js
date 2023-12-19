@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { openDatabase } from 'expo-sqlite';
 
 const db = openDatabase('ChildDB.db');
@@ -17,6 +17,12 @@ const ChildRegistrationForm = () => {
   });
 
   const [isChecked, setIsChecked] = useState(false);
+
+  const [selectedGender, setSelectedGender] = useState('Male');
+
+  const handleGenderChange = (value) => {
+    setSelectedGender(value);
+  };
 
   const handleCheck = () => {
     setIsChecked(!isChecked);
@@ -95,12 +101,14 @@ const ChildRegistrationForm = () => {
         style={styles.input}
         value={firstName}
         onChangeText={(text) => setFirstName(text)}
+        placeholder="e.g Christine"
       />
       <Text>Last Name</Text>
       <TextInput
         style={styles.input}
         value={lastName}
         onChangeText={(text) => setLastName(text)}
+        placeholder="e.g Banda"
       />
       <Text>Age</Text>
       <TextInput
@@ -108,13 +116,29 @@ const ChildRegistrationForm = () => {
         value={age}
         keyboardType="numeric"
         onChangeText={(text) => setAge(text)}
+        placeholder="e.g 10"
       />
       <Text>Gender</Text>
-      <TextInput
-        style={styles.input}
-        value={gender}
-        onChangeText={(text) => setGender(text)}
-      />
+      <View style={styles.radioContainer}>
+        <TouchableOpacity
+          style={[
+            styles.radio,
+            { backgroundColor: selectedGender === 'Male' ? '#b3cde0' : '#fff' }, // Adjust styles based on selected gender
+          ]}
+          onPress={() => handleGenderChange('Male')}
+        >
+          <Text style={{ color: selectedGender === 'Male' ? '#fff' : '#000' }}>Male</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.radio,
+            { backgroundColor: selectedGender === 'Female' ? '#b3cde0' : '#fff' }, // Adjust styles based on selected gender
+          ]}
+          onPress={() => handleGenderChange('Female')}
+        >
+          <Text style={{ color: selectedGender === 'Female' ? '#fff' : '#000' }}>Female</Text>
+        </TouchableOpacity>
+      </View>
       <Text>Immunizations(click to select)</Text>
       {renderCheckbox('BCG', 'BCG')}
       {renderCheckbox('MMR', 'MMR')}
@@ -163,6 +187,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  radio: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#3498db',
+    borderRadius: 5,
+    paddingVertical: 10,
   },
 });
 
