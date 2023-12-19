@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, CheckBox } from 'react-native';
+import { openDatabase } from 'react-native-sqlite-storage';
 
 const ChildRegistrationForm = () => {
   const [firstName, setFirstName] = useState('');
