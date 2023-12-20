@@ -48,45 +48,106 @@ const ChildRegistrationForm = () => {
     }, 10000); // 10 seconds
   };
 
+  // State variables for error messages
+  const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
+    age: '',
+    gender: '',
+    immunizations: '',
+  });
+
+
+  // Function to validate the form data
+  const validateFormData = () => {
+    let hasError = false;
+    const newErrors = {
+      firstName: '',
+      lastName: '',
+      age: '',
+      gender: '',
+      immunizations: '',
+    };
+
+    // First Name validation
+    if (!firstName.trim() || /\d/.test(firstName) || /\s/.test(firstName)) {
+      newErrors.firstName = 'Enter a valid First Name';
+      hasError = true;
+    }
+
+    // Last Name validation
+    if (!lastName.trim() || /\d/.test(lastName) || /\s/.test(lastName)) {
+      newErrors.lastName = 'Enter a valid Last Name';
+      hasError = true;
+    }
+
+    // Age validation
+    if (!age.trim() || isNaN(age) || +age <= 0) {
+      newErrors.age = 'Enter a valid Age (> 0)';
+      hasError = true;
+    }
+
+    // Gender validation
+    if (!selectedGender) {
+      newErrors.gender = 'Select Gender';
+      hasError = true;
+    }
+
+    // Immunizations validation
+    const selectedImmunizations = Object.values(immunizations);
+    if (!selectedImmunizations.includes(true)) {
+      newErrors.immunizations = 'Select at least one Immunization';
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+    return hasError;
+  };
+
   const handleSave = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'INSERT INTO Child (first_name, last_name, age, gender, bcg, mmr, rv, dtap) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-          firstName,
-          lastName,
-          age,
-          gender,
-          immunizations.BCG ? 1 : 0,
-          immunizations.MMR ? 1 : 0,
-          immunizations.RV ? 1 : 0,
-          immunizations.DTaP ? 1 : 0,
-        ],
-        (tx, results) => {
-          if (results.rowsAffected > 0) {
-            console.log('Child saved successfully');
-            // Reset form fields after saving
-            setFirstName('');
-            setLastName('');
-            setAge('');
-            setGender('Male');
-            setImmunizations({
-              BCG: false,
-              MMR: false,
-              RV: false,
-              DTaP: false,
-            });
-            // Show success message
-            showSuccessMessage();
-          } else {
-            console.log('Failed to save data');
+    const hasError = validateFormData();
+
+    if (!hasError) {
+      db.transaction((tx) => {
+        tx.executeSql(
+          'INSERT INTO Child (first_name, last_name, age, gender, bcg, mmr, rv, dtap) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [
+            firstName,
+            lastName,
+            age,
+            gender,
+            immunizations.BCG ? 1 : 0,
+            immunizations.MMR ? 1 : 0,
+            immunizations.RV ? 1 : 0,
+            immunizations.DTaP ? 1 : 0,
+          ],
+          (tx, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Child saved successfully');
+              // Reset form fields after saving
+              setFirstName('');
+              setLastName('');
+              setAge('');
+              setGender('Male');
+              setImmunizations({
+                BCG: false,
+                MMR: false,
+                RV: false,
+                DTaP: false,
+              });
+              // Show success message
+              showSuccessMessage();
+            } else {
+              console.log('Failed to save data');
+            }
+          },
+          (tx, error) => {
+            console.log('Error:', error);
           }
-        },
-        (tx, error) => {
-          console.log('Error:', error);
-        }
-      );
-    });
+        );
+      });
+      showSuccessMessage();
+    }
   };
 
   const toggleImmunization = (type) => {
@@ -107,17 +168,22 @@ const ChildRegistrationForm = () => {
       </TouchableOpacity>
     );
   };
-
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.container}>
-      <Text>First Name</Text>
-      <TextInput
-        style={styles.input}
-        value={firstName}
-        onChangeText={(text) => setFirstName(text)}
-        placeholder="e.g Christine"
-      />
+      <View style={styles.fieldContainer}>
+        <Text>First Name</Text>
+        <TextInput
+          style={styles.input}
+          value={firstName}
+          onChangeText={(text) => setFirstName(text)}
+          placeholder="e.g Christine"
+        />
+        <Text style={styles.errorText}>{errors.firstName}</Text>
+      </View>
+
+      {/* Similar structure for other fields */}
+      <View style={styles.fieldContainer}>
       <Text>Last Name</Text>
       <TextInput
         style={styles.input}
@@ -125,6 +191,9 @@ const ChildRegistrationForm = () => {
         onChangeText={(text) => setLastName(text)}
         placeholder="e.g Banda"
       />
+      <Text style={styles.errorText}>{errors.lastName}</Text>
+      </View>
+      <View style={styles.fieldContainer}>
       <Text>Age</Text>
       <TextInput
         style={styles.input}
@@ -133,6 +202,8 @@ const ChildRegistrationForm = () => {
         onChangeText={(text) => setAge(text)}
         placeholder="e.g 10"
       />
+      <Text style={styles.errorText}>{errors.age}</Text>
+      </View>
       <Text>Gender</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity
@@ -153,19 +224,24 @@ const ChildRegistrationForm = () => {
         >
           <Text style={{ color: selectedGender === 'Female' ? '#fff' : '#000' }}>Female</Text>
         </TouchableOpacity>
+        <Text style={styles.errorText}>{errors.gender}</Text>
       </View>
+      <View>
       <Text>Immunizations(click to select)</Text>
       {renderCheckbox('BCG', 'BCG')}
       {renderCheckbox('MMR', 'MMR')}
       {renderCheckbox('RV', 'RV')}
       {renderCheckbox('DTaP', 'DTaP')}
+      <Text style={styles.errorText}>{errors.immunizations}</Text>
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Add</Text>
     </TouchableOpacity>
-    </View>
+
+      {/* Success message */}
       {showMessage && (
         <View style={styles.successMessage}>
-          <Text style={styles.successText}>Child saved successfully!</Text>
+          <Text style={styles.successText}>Data saved successfully!</Text>
         </View>
       )}
     </ScrollView>
@@ -238,6 +314,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  errorContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 5,
+  },
+  fieldContainer: {
+    marginBottom: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
   },
 });
 
