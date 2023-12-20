@@ -36,6 +36,18 @@ const ChildRegistrationForm = () => {
     });
   }, []);
 
+
+  // State to manage the visibility of the success message
+  const [showMessage, setShowMessage] = useState(false);
+
+  // Function to show the success message for 10 seconds
+  const showSuccessMessage = () => {
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 10000); // 10 seconds
+  };
+
   const handleSave = () => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -52,7 +64,7 @@ const ChildRegistrationForm = () => {
         ],
         (tx, results) => {
           if (results.rowsAffected > 0) {
-            console.log('Data saved successfully');
+            console.log('Child saved successfully');
             // Reset form fields after saving
             setFirstName('');
             setLastName('');
@@ -64,6 +76,8 @@ const ChildRegistrationForm = () => {
               RV: false,
               DTaP: false,
             });
+            // Show success message
+            showSuccessMessage();
           } else {
             console.log('Failed to save data');
           }
@@ -149,6 +163,11 @@ const ChildRegistrationForm = () => {
         <Text style={styles.buttonText}>Add</Text>
     </TouchableOpacity>
     </View>
+      {showMessage && (
+        <View style={styles.successMessage}>
+          <Text style={styles.successText}>Child saved successfully!</Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -204,6 +223,21 @@ const styles = StyleSheet.create({
     borderColor: '#3498db',
     borderRadius: 5,
     paddingVertical: 10,
+  },
+  successMessage: {
+    backgroundColor: '#4caf50',
+    padding: 10,
+    borderRadius: 5,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 9999,
+  },
+  successText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
