@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet,TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
 const ChildDetails = ({ route, navigation }) => {
   const { child } = route.params;

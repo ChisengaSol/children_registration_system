@@ -168,7 +168,7 @@ const ChildRegistrationForm = () => {
       </TouchableOpacity>
     );
   };
-  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.fieldContainer}>
@@ -182,27 +182,26 @@ const ChildRegistrationForm = () => {
         <Text style={styles.errorText}>{errors.firstName}</Text>
       </View>
 
-      {/* Similar structure for other fields */}
       <View style={styles.fieldContainer}>
-      <Text>Last Name</Text>
-      <TextInput
-        style={styles.input}
-        value={lastName}
-        onChangeText={(text) => setLastName(text)}
-        placeholder="e.g Banda"
-      />
-      <Text style={styles.errorText}>{errors.lastName}</Text>
+        <Text>Last Name</Text>
+        <TextInput
+          style={styles.input}
+          value={lastName}
+          onChangeText={(text) => setLastName(text)}
+          placeholder="e.g Banda"
+        />
+        <Text style={styles.errorText}>{errors.lastName}</Text>
       </View>
       <View style={styles.fieldContainer}>
-      <Text>Age</Text>
-      <TextInput
-        style={styles.input}
-        value={age}
-        keyboardType="numeric"
-        onChangeText={(text) => setAge(text)}
-        placeholder="e.g 10"
-      />
-      <Text style={styles.errorText}>{errors.age}</Text>
+        <Text>Age</Text>
+        <TextInput
+          style={styles.input}
+          value={age}
+          keyboardType="numeric"
+          onChangeText={(text) => setAge(text)}
+          placeholder="e.g 10"
+        />
+        <Text style={styles.errorText}>{errors.age}</Text>
       </View>
       <Text>Gender</Text>
       <View style={styles.radioContainer}>
@@ -227,16 +226,16 @@ const ChildRegistrationForm = () => {
         <Text style={styles.errorText}>{errors.gender}</Text>
       </View>
       <View>
-      <Text>Immunizations(click to select)</Text>
-      {renderCheckbox('BCG', 'BCG')}
-      {renderCheckbox('MMR', 'MMR')}
-      {renderCheckbox('RV', 'RV')}
-      {renderCheckbox('DTaP', 'DTaP')}
-      <Text style={styles.errorText}>{errors.immunizations}</Text>
+        <Text>Immunizations(click to select)</Text>
+        {renderCheckbox('BCG', 'BCG')}
+        {renderCheckbox('MMR', 'MMR')}
+        {renderCheckbox('RV', 'RV')}
+        {renderCheckbox('DTaP', 'DTaP')}
+        <Text style={styles.errorText}>{errors.immunizations}</Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Add</Text>
-    </TouchableOpacity>
+      </TouchableOpacity>
 
       {/* Success message */}
       {showMessage && (

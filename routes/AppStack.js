@@ -14,8 +14,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="ChildrenListView">
-        <Stack.Screen name="ChildRegistrationForm" component={ChildRegistrationForm}/>
-        <Stack.Screen name="ChildrenListView" component={ChildrenListView}/>
+        <Stack.Screen name="ChildRegistrationForm" component={ChildRegistrationForm} />
+        <Stack.Screen name="ChildrenListView" component={ChildrenListView} />
         <Stack.Screen name="ChildDetails" component={ChildDetails} />
       </Stack.Navigator>
     </NavigationContainer>
